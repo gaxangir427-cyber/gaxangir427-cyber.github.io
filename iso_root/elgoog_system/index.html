@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elgoog OS &bull; Complete System</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            background: #030407;
+            color: #00ff66;
+            cursor: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #custom-cursor {
+            position: fixed;
+            top: 0; left: 0;
+            width: 16px; height: 16px;
+            background: #00ff66;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 999999;
+            box-shadow: 0 0 12px #00ff66;
+            transform: translate(-50%, -50%);
+        }
+
+        .system-box {
+            width: 760px;
+            background: rgba(0, 15, 8, 0.85);
+            border: 2px solid #00ff6655;
+            padding: 35px;
+            border-radius: 14px;
+            box-shadow: 0 0 40px rgba(0, 255, 102, 0.15);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .duck-logo {
+            font-size: 65px;
+            margin-bottom: 10px;
+            filter: drop-shadow(0 0 15px rgba(255, 204, 0, 0.6));
+        }
+
+        h2 {
+            font-size: 22px;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            border-bottom: 1px solid #00ff6633;
+            padding-bottom: 10px;
+            width: 100%;
+            text-align: center;
+            color: #fff;
+        }
+
+        .screen-section { width: 100%; display: none; }
+        .screen-section.active { display: flex; flex-direction: column; align-items: center; }
+
+        .check-list { width: 100%; }
+        .check-line {
+            font-size: 15px;
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+            opacity: 0.3;
+            transition: 0.3s;
+        }
+        .check-line.active { opacity: 1; color: #fff; }
+        .check-line.success { color: #00ff66; opacity: 1; }
+
+        .option-card {
+            background: rgba(0, 255, 102, 0.05);
+            border: 1px solid #00ff6644;
+            padding: 12px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        .option-card:hover { background: rgba(0, 255, 102, 0.15); border-color: #00ff66; }
+
+        .scroll-select-box {
+            width: 100%; max-height: 200px; overflow-y: auto;
+            border: 1px solid #00ff6644; border-radius: 8px;
+            background: rgba(0, 0, 0, 0.4); margin-bottom: 20px; padding: 5px;
+        }
+
+        .input-field {
+            width: 100%; background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #00ff66; padding: 12px; color: #00ff66;
+            font-family: monospace; font-size: 16px; border-radius: 6px;
+            outline: none; margin-bottom: 20px; text-align: center;
+        }
+
+        .gears-container { font-size: 70px; margin: 20px 0; animation: spinGears 3s linear infinite; }
+        @keyframes spinGears { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .btn {
+            background: #00ff66; color: #030407; border: none; padding: 10px 25px;
+            font-weight: bold; border-radius: 6px; cursor: pointer; font-size: 15px;
+            box-shadow: 0 0 10px rgba(0, 255, 102, 0.4);
+        }
+
+        .progress-container { width: 100%; height: 10px; background: rgba(255, 255, 255, 0.1); border-radius: 5px; overflow: hidden; margin: 20px 0; }
+        .progress-bar { width: 0%; height: 100%; background: #00ff66; box-shadow: 0 0 15px #00ff66; transition: width 0.3s linear; }
+
+        /* ОБОИ И РАБОЧИЙ СТОЛ */
+        #desktop-environment {
+            position: fixed; top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: linear-gradient(rgba(10, 15, 24, 0.45), rgba(10, 15, 24, 0.75)), 
+                        url('https://images.unsplash.com/photo-1617814076367-b759c7d7e738?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
+            display: none; flex-direction: column; z-index: 10000;
+        }
+
+        #desktop-icons {
+            height: calc(100vh - 55px); padding: 30px;
+            display: grid; grid-template-columns: repeat(auto-fill, 100px); grid-template-rows: repeat(auto-fill, 100px);
+            gap: 20px;
+        }
+        .desktop-icon {
+            width: 90px; text-align: center; cursor: pointer; padding: 10px; border-radius: 12px;
+            transition: 0.2s; backdrop-filter: blur(5px);
+        }
+        .desktop-icon:hover { background: rgba(255,255,255,0.15); }
+        .desktop-icon .icon-img { font-size: 42px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.6)); }
+        .desktop-icon span { font-size: 12px; color: #fff; font-weight: 500; text-shadow: 0 2px 4px #000; }
+
+        /* Окна */
+        .app-window {
+            position: absolute; background: rgba(15, 23, 36, 0.94);
+            backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px; box-shadow: 0 15px 40px rgba(0,0,0,0.7);
+            display: flex; flex-direction: column; overflow: hidden; color: #fff;
+        }
+        .win-header {
+            background: rgba(255,255,255,0.05); padding: 10px 15px;
+            display: flex; justify-content: space-between; align-items: center; cursor: move;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .win-title { font-weight: bold; font-size: 14px; display: flex; gap: 8px; align-items: center; }
+        .win-body { padding: 12px; flex: 1; overflow: auto; }
+        .win-btn { background: #ff3333; color: white; border: none; padding: 4px 10px; border-radius: 4px; cursor: pointer; }
+
+        #taskbar {
+            position: fixed; bottom: 10px; left: 50%; transform: translateX(-50%);
+            width: 95%; max-width: 1200px; height: 50px;
+            background: rgba(15, 23, 36, 0.85); backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.15); border-radius: 16px;
+            display: flex; align-items: center; padding: 0 15px; color: white;
+        }
+
+        #start-menu {
+            position: fixed; bottom: 70px; left: calc(50% - 475px);
+            width: 400px; height: 480px; background: rgba(12, 18, 28, 0.95);
+            backdrop-filter: blur(25px); border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 20px; padding: 20px; display: none; flex-direction: column;
+            z-index: 100001; color: white;
+        }
+
+        #sleep-screen {
+            position: fixed; top:0; left:0; width:100vw; height:100vh;
+            background: #000; z-index: 999999; display: none;
+            justify-content: center; align-items: center; color: #555;
+            flex-direction: column; gap: 15px; cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="custom-cursor"></div>
+
+    <div id="sleep-screen" onclick="wakeUpSystem()">
+        <div style="font-size: 50px;">🌙</div>
+        <div>Система в спящем режиме. Кликните мышкой для продолжения...</div>
+    </div>
+
+    <div class="system-box" id="main-installer-box">
+        <div class="duck-logo">🦆</div>
+
+        <div id="screen-boot" class="screen-section active">
+            <h2>Elgoog OS &bull; Secure Boot</h2>
+            <div class="check-list">
+                <div id="c1" class="check-line"><span>[ 1 ] Проверка процессора (CPU)...</span><span id="s1">Ожидание...</span></div>
+                <div id="c2" class="check-line"><span>[ 2 ] Диагностика видеокарты (GPU)...</span><span id="s2">Ожидание...</span></div>
+                <div id="c3" class="check-line"><span>[ 3 ] Тестирование памяти (RAM)...</span><span id="s3">Ожидание...</span></div>
+                <div id="c4" class="check-line"><span>[ 4 ] Проверка диска и материнской платы...</span><span id="s4">Ожидание...</span></div>
+                <div id="c5" class="check-line"><span>[ 5 ] Сканирование камеры на слежку...</span><span id="s5">Ожидание...</span></div>
+            </div>
+            <div id="boot-status-text" style="margin-top: 15px; font-weight: bold; color: #00ff66;"></div>
+        </div>
+
+        <div id="screen-disk" class="screen-section">
+            <h2>Выбор диска для установки</h2>
+            <div class="option-card" onclick="selectDisk('/dev/sda')"><span>💾 /dev/sda [SSD 512 GB]</span><span style="color:#00ff66;">Выбрать →</span></div>
+        </div>
+
+        <div id="screen-format" class="screen-section">
+            <h2>⚠️ Форматирование диска</h2>
+            <p style="color:#ff3333; font-weight:bold;">Все данные будут стерты безвозвратно. Продолжить?</p>
+            <button class="btn" style="background:#ff3333; color:#fff;" onclick="proceedInstallation(true)">ДА, ФОРМАТИРОВАТЬ</button>
+        </div>
+
+        <div id="screen-edition" class="screen-section">
+            <h2>Выбор редакции ОС</h2>
+            <div class="option-card" onclick="startInstallSequence('Pro')"><strong>⚡ Elgoog OS Pro Edition (elg.kk)</strong><span style="color:#00ff66;">Выбрать</span></div>
+        </div>
+
+        <div id="screen-progress" class="screen-section">
+            <h2>Установка Elgoog OS и ядра elg.kk</h2>
+            <div class="progress-container"><div class="progress-bar" id="p-bar"></div></div>
+            <div id="install-percent" style="color: #00ff66; margin-top: 5px;">0%</div>
+        </div>
+
+        <div id="screen-language" class="screen-section">
+            <h2>🌍 Выбор языка системы</h2>
+            <div class="scroll-select-box">
+                <div class="option-card" onclick="nextAfterLanguage('Русский')"><strong>🇷🇺 Русский (Russian) — Основной</strong><span style="color:#00ff66;">Выбрать</span></div>
+            </div>
+        </div>
+
+        <div id="screen-region" class="screen-section">
+            <h2>🗺️ Выбор региона</h2>
+            <div class="scroll-select-box">
+                <div class="option-card" onclick="nextAfterRegion('Россия')"><span>🇷🇺 Россия</span><span style="color:#00ff66;">Выбрать</span></div>
+            </div>
+        </div>
+
+        <div id="screen-user" class="screen-section">
+            <h2>👤 Имя пользователя</h2>
+            <input type="text" id="username-input" class="input-field" value="caxangir">
+            <button class="btn" onclick="submitUsername()">Далее →</button>
+        </div>
+
+        <div id="screen-gears" class="screen-section">
+            <h2>⚙️ Финальная персонализация</h2>
+            <div class="gears-container">⚙️ ⚙️ ⚙️</div>
+            <div class="progress-container"><div class="progress-bar" id="gears-bar"></div></div>
+            <div id="gears-percent" style="color: #00ff66; margin-top: 5px;">0%</div>
+        </div>
+
+        <div id="screen-shutdown" class="screen-section">
+            <h2 style="color:#00ff66;">🎉 УСТАНОВКА ЗАВЕРШЕНА!</h2>
+            <p>Запуск рабочего стола...</p>
+        </div>
+    </div>
+
+    <!-- РАБОЧИЙ СТОЛ -->
+    <div id="desktop-environment">
+        <div id="desktop-icons">
+            <div class="desktop-icon" onclick="openGoogleBrowser()"><div class="icon-img">🌐</div><span>Google</span></div>
+            <div class="desktop-icon" onclick="openFileManager()"><div class="icon-img">💻</div><span>Проводник</span></div>
+            <div class="desktop-icon" onclick="openPaintApp()"><div class="icon-img">🎨</div><span>Рисование</span></div>
+            <div class="desktop-icon" onclick="open3DStudio()"><div class="icon-img">🧊</div><span>3D Студия</span></div>
+            <div class="desktop-icon" onclick="openMSWord()"><div class="icon-img">📘</div><span>MS Word</span></div>
+            <div class="desktop-icon" onclick="openDeviceManager()"><div class="icon-img">🖥️</div><span>Драйверы</span></div>
+            <div class="desktop-icon" onclick="openSettings()"><div class="icon-img">⚙️</div><span>Настройки</span></div>
+        </div>
+
+        <!-- МЕНЮ ПУСК -->
+        <div id="start-menu">
+            <div style="display:flex; align-items:center; gap:12px; margin-bottom:15px; border-bottom:1px solid #333; padding-bottom:12px;">
+                <div style="width:45px; height:45px; background:#00ff66; color:#000; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:20px;" id="user-avatar">C</div>
+                <div>
+                    <div style="font-weight:bold; font-size:16px;" id="user-display-name">caxangir</div>
+                    <div style="font-size:12px; color:#00ff66;">Elgoog OS Pro (elg.kk)</div>
+                </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px;">
+                <div onclick="openGoogleBrowser()" style="background:rgba(255,255,255,0.05); padding:10px; border-radius:8px; cursor:pointer;">🌐 Google</div>
+                <div onclick="openFileManager()" style="background:rgba(255,255,255,0.05); padding:10px; border-radius:8px; cursor:pointer;">📁 Проводник</div>
+                <div onclick="openPaintApp()" style="background:rgba(255,255,255,0.05); padding:10px; border-radius:8px; cursor:pointer;">🎨 Рисование</div>
+                <div onclick="open3DStudio()" style="background:rgba(255,255,255,0.05); padding:10px; border-radius:8px; cursor:pointer;">🧊 3D Студия</div>
+                <div onclick="openMSWord()" style="background:rgba(255,255,255,0.05); padding:10px; border-radius:8px; cursor:pointer;">📘 MS Word</div>
+                <div onclick="openSettings()" style="background:rgba(255,255,255,0.05); padding:10px; border-radius:8px; cursor:pointer;">⚙️ Настройки</div>
+            </div>
+
+            <div style="margin-top:auto; display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                <button onclick="sleepSystem()" style="background:#444; color:white; border:none; padding:8px; border-radius:6px; cursor:pointer;">🌙 Спящий режим</button>
+                <button onclick="location.reload()" style="background:#00ff66; color:#000; border:none; padding:8px; border-radius:6px; cursor:pointer; font-weight:bold;">🔄 Перезагрузка</button>
+                <button onclick="window.close()" style="background:#ff3333; color:white; border:none; padding:8px; border-radius:6px; cursor:pointer;">⭕ Выключить</button>
+                <button onclick="localStorage.removeItem('elgoog_installed'); location.reload();" style="background:#990000; color:white; border:none; padding:8px; border-radius:6px; cursor:pointer;">⚠️ Сброс ОС</button>
+            </div>
+        </div>
+
+        <div id="taskbar">
+            <button onclick="toggleStartMenu()" style="background:rgba(0,255,102,0.15); border:1px solid #00ff66; color:white; padding:6px 14px; border-radius:8px; cursor:pointer; font-weight:bold;">🦆 Пуск</button>
+            <div style="margin-left:auto; display:flex; gap:15px; font-size:14px; align-items:center;">
+                <span>🛡️ elg.kk Active</span>
+                <div id="clock" style="font-weight:bold;">00:00</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ПОДКЛЮЧЕНИЕ СИСТЕМНЫХ ПОДСИСТЕМ В СТРОГОМ ПОРЯДКЕ -->
+    <script src="system_files.js"></script>
+    <script src="drivers.js"></script>
+    <script src="settings_manager.js"></script>
+    <script src="apps.js"></script>
+
+    <script>
+        const cursor = document.getElementById('custom-cursor');
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen-section').forEach(el => el.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        const isInstalled = localStorage.getItem('elgoog_installed') === 'true';
+
+        let currentStep = 1;
+        const totalSteps = 5;
+
+        function runBootloader() {
+            if (currentStep <= totalSteps) {
+                let line = document.getElementById('c' + currentStep);
+                let statusSpan = document.getElementById('s' + currentStep);
+
+                if (line && statusSpan) {
+                    line.classList.add('active');
+                    statusSpan.innerText = "ПРОВЕРКА...";
+
+                    setTimeout(() => {
+                        line.classList.remove('active');
+                        line.classList.add('success');
+                        statusSpan.innerText = "[ УСПЕШНО ]";
+                        currentStep++;
+                        setTimeout(runBootloader, 250);
+                    }, 350);
+                }
+            } else {
+                if (isInstalled) {
+                    document.getElementById('boot-status-text').innerText = "✅ ПРОВЕРКА ПРОЙДЕНА. ИНИЦИАЛИЗАЦИЯ elg.kk И ЗАПУСК...";
+                    setTimeout(launchDesktop, 800);
+                } else {
+                    setTimeout(() => { showScreen('screen-disk'); }, 400);
+                }
+            }
+        }
+
+        function selectDisk(disk) { showScreen('screen-format'); }
+        function proceedInstallation(confirmed) { showScreen('screen-edition'); }
+        
+        function startInstallSequence(edition) {
+            showScreen('screen-progress');
+            let progress = 0;
+            let timer = setInterval(() => {
+                progress += 2;
+                document.getElementById('p-bar').style.width = progress + '%';
+                document.getElementById('install-percent').innerText = progress + '%';
+                if (progress >= 100) {
+                    clearInterval(timer);
+                    setTimeout(() => { showScreen('screen-language'); }, 400);
+                }
+            }, 100); 
+        }
+
+        function nextAfterLanguage(lang) { showScreen('screen-region'); }
+        function nextAfterRegion(region) { showScreen('screen-user'); }
+
+        function submitUsername() {
+            const val = document.getElementById('username-input').value.trim() || "caxangir";
+            localStorage.setItem('elgoog_installed', 'true');
+            localStorage.setItem('elgoog_username', val);
+            showScreen('screen-gears');
+            startGearsAnimation();
+        }
+
+        function startGearsAnimation() {
+            let progress = 0;
+            let timer = setInterval(() => {
+                progress += 2;
+                document.getElementById('gears-bar').style.width = progress + '%';
+                document.getElementById('gears-percent').innerText = progress + '%';
+                if (progress >= 100) {
+                    clearInterval(timer);
+                    showScreen('screen-shutdown');
+                    setTimeout(launchDesktop, 1200);
+                }
+            }, 100);
+        }
+
+        function launchDesktop() {
+            document.getElementById('main-installer-box').style.display = 'none';
+            document.getElementById('desktop-environment').style.display = 'flex';
+
+            const savedUser = localStorage.getItem('elgoog_username') || "caxangir";
+            document.getElementById('user-display-name').innerText = savedUser;
+            document.getElementById('user-avatar').innerText = savedUser.charAt(0).toUpperCase();
+
+            playStartupSound();
+
+            setInterval(() => {
+                const d = new Date();
+                document.getElementById('clock').innerText = d.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            }, 1000);
+        }
+
+        function playStartupSound() {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                [261.63, 329.63, 392.00, 523.25].forEach((freq, i) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.frequency.setValueAtTime(freq, ctx.currentTime);
+                    gain.gain.setValueAtTime(0, ctx.currentTime);
+                    gain.gain.linearRampToValueAtTime(0.1, ctx.currentTime + 0.2 + i * 0.1);
+                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 2.2);
+                    osc.connect(gain); gain.connect(ctx.destination);
+                    osc.start(ctx.currentTime + i * 0.08); osc.stop(ctx.currentTime + 2.5);
+                });
+            } catch(e){}
+        }
+
+        function toggleStartMenu() {
+            const m = document.getElementById('start-menu');
+            m.style.display = (m.style.display === 'flex') ? 'none' : 'flex';
+        }
+
+        function sleepSystem() { document.getElementById('sleep-screen').style.display = 'flex'; }
+        function wakeUpSystem() { document.getElementById('sleep-screen').style.display = 'none'; }
+
+        window.onload = runBootloader;
+    </script>
+</body>
+</html>

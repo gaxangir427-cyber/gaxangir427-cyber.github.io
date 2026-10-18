@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO И МЕТА-ТЕГИ ДЛЯ ПОИСКОВИКОВ (GOOGLE, YANDEX) -->
+    <title>Скачать Elgoog OS Pro &bull; Официальный сайт операционной системы</title>
+    <meta name="description" content="Официальный сайт Elgoog OS. Скачать гибридный ISO-образ Elgoog OS v10.0 Pro с поддержкой MBR/GPT, ядра elg.kk и игрового режима Roblox. Инструкция по записи в Rufus.">
+    <meta name="keywords" content="скачать elgoog os, elgoog os iso, elgoog os rufus, elgoog os скачать, новая операционная система, elg.kk kernel">
+    <meta name="robots" content="index, follow">
+
+    <!-- OPEN GRAPH (ДЛЯ КАРТОЧЕК В СОЦСЕТЯХ И МЕССЕНДЖЕРАХ) -->
+    <meta property="og:title" content="Скачать Elgoog OS Pro - Официальный сайт">
+    <meta property="og:description" content="Модульная операционная система с ядром elg.kk. Скачайте ISO для записи через Rufus.">
+    <meta property="og:type" content="website">
+
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(180deg, #1a0b2e 0%, #3b1443 40%, #8c2d19 70%, #d46511 100%);
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Эффект закатного силуэта и моря */
+        .sea-silhouette {
+            position: fixed;
+            bottom: 0; left: 0; width: 100%; height: 120px;
+            background: linear-gradient(0deg, #050208 0%, rgba(5,2,8,0.7) 60%, transparent 100%);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .sun-glow {
+            position: absolute;
+            top: 12%;
+            width: 180px; height: 180px;
+            background: radial-gradient(circle, #ffcc00 0%, #ff5500 70%, transparent 100%);
+            border-radius: 50%;
+            box-shadow: 0 0 60px #ff5500;
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 2;
+            max-width: 900px;
+            text-align: center;
+            padding: 40px 20px;
+            margin-top: 30px;
+        }
+
+        .duck-badge {
+            font-size: 75px;
+            margin-bottom: 10px;
+            filter: drop-shadow(0 0 20px rgba(255, 204, 0, 0.8));
+            animation: floatDuck 3s ease-in-out infinite;
+        }
+
+        @keyframes floatDuck {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        h1 {
+            font-size: 46px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+            text-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+
+        p.subtitle {
+            font-size: 18px;
+            color: #ffcc99;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        /* ПРЕДУПРЕЖДЕНИЕ О РАННЕЙ СТАДИИ РАЗРАБОТКИ */
+        .warning-banner {
+            background: rgba(255, 51, 51, 0.15);
+            border: 2px dashed #ff4444;
+            backdrop-filter: blur(10px);
+            padding: 18px 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            text-align: left;
+            box-shadow: 0 0 20px rgba(255, 51, 51, 0.3);
+        }
+
+        .warning-banner h3 {
+            color: #ff6666;
+            font-size: 17px;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .warning-banner p {
+            font-size: 13px;
+            color: #ffe6e6;
+            line-height: 1.4;
+        }
+
+        .download-box {
+            background: rgba(10, 5, 20, 0.85);
+            border: 2px solid #ff7700;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 0 35px rgba(255, 119, 0, 0.4);
+            margin-bottom: 40px;
+        }
+
+        .btn-download {
+            background: linear-gradient(135deg, #ff5500, #ffaa00);
+            color: #fff;
+            border: none;
+            padding: 16px 40px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(255, 85, 0, 0.6);
+            transition: 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        .btn-download:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(255, 170, 0, 0.8);
+        }
+
+        /* ИНСТРУКЦИЯ ДЛЯ RUFUS */
+        .rufus-guide {
+            background: rgba(20, 10, 35, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 25px;
+            border-radius: 14px;
+            text-align: left;
+            margin-bottom: 50px;
+        }
+
+        .rufus-guide h2 {
+            font-size: 20px;
+            color: #ffaa44;
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 170, 68, 0.3);
+            padding-bottom: 8px;
+        }
+
+        .step-list {
+            list-style: none;
+        }
+
+        .step-list li {
+            font-size: 14px;
+            color: #ddd;
+            margin-bottom: 12px;
+            padding-left: 28px;
+            position: relative;
+        }
+
+        .step-list li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #00ff66;
+            font-weight: bold;
+        }
+
+        footer {
+            position: relative;
+            z-index: 2;
+            padding: 20px;
+            font-size: 12px;
+            color: rgba(255,255,255,0.5);
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sun-glow"></div>
+    <div class="sea-silhouette"></div>
+
+    <div class="container">
+        <div class="duck-badge">🦆</div>
+        <h1>Elgoog OS Pro</h1>
+        <p class="subtitle">Инновационная модульная система с ядром <b>elg.kk</b> для реальных ПК.<br>Запустите на любом ноутбуке или ПК с USB-флешки!</p>
+
+        <!-- ПРЕДУПРЕЖДЕНИЕ -->
+        <div class="warning-banner">
+            <h3>⚠️ ВНИМАНИЕ: СИСТЕМА В СТАДИИ АКТИВНОЙ РАЗРАБОТКИ (BETA)</h3>
+            <p>
+                Операционная система Elgoog OS находится в процессе активной разработки. Некоторые драйверы и функции программ тестируются.
+                Рекомендуется запускать образ в режиме <b>Live-USB</b> без форматирования личных дисков.
+            </p>
+        </div>
+
+        <!-- КНОПКА СКАЧИВАНИЯ -->
+        <div class="download-box">
+            <h2 style="font-size:22px; margin-bottom:10px;">Скачать Elgoog OS v10.0</h2>
+            <p style="font-size:13px; color:#ccc; margin-bottom:20px;">Гибридный образ (MBR/GPT) &bull; Файл: <code>elgoog-os-v10.iso</code> (~45 МБ)</p>
+            <a href="elgoog-os-v10.iso" class="btn-download" download>📥 Скачать ISO-образ (Direct Link)</a>
+            <div style="font-size:11px; color:#aaa; margin-top:5px;">Совместимо с Rufus, Ventoy и BalenaEtcher</div>
+        </div>
+
+        <!-- ИНСТРУКЦИЯ ПО RUFUS -->
+        <div class="rufus-guide">
+            <h2>🛠️ Как записать Elgoog OS на флешку через Rufus:</h2>
+            <ul class="step-list">
+                <li><b>Шаг 1:</b> Вставьте USB-флешку (объёмом от 2 ГБ) в ваш ПК.</li>
+                <li><b>Шаг 2:</b> Скачайте файл <code>elgoog-os-v10.iso</code> по кнопке выше.</li>
+                <li><b>Шаг 3:</b> Откройте программу <b>Rufus</b> на вашем компьютера.</li>
+                <li><b>Шаг 4:</b> В поле <i>Устройство</i> выберите вашу флешку, а в поле <i>Метод загрузки</i> выберите скачанный ISO.</li>
+                <li><b>Шаг 5:</b> Выберите схему раздела: <b>GPT</b> (для UEFI) или <b>MBR</b> (для старых BIOS) и нажмите <b>СТАРТ</b>.</li>
+                <li><b>Шаг 6:</b> Перезагрузите ПК, вызовите Boot Menu (зажав F12, F11 или Esc) и выберите вашу флешку!</li>
+            </ul>
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2026 Elgoog OS Project. All rights reserved. Designed for elite hardware.
+    </footer>
+
+</body>
+</html>
